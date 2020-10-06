@@ -26,5 +26,19 @@
 		"description": "Test description",
 		"image": "https://images-na.ssl-images-amazon.com/images/I/61HpQqVQ37L._SY355_.jpg",
 		"level": 3
+	},
+	{
+		"id": "ea468db6-4e45-47cf-9799-13611e0f7140",
+		"name": "cdgsds",
+		"description": "sadfgsd",
+		"image": "common.jpg",
+		"level": 0
+	},
+	{
+		"id": "76df1116-7112-4cfc-8b68-21d8ce013c3d",
+		"name": "degadfg",
+		"description": "dasgsdfg",
+		"image": "https://images-na.ssl-images-amazon.com/images/I/61izOzq%2BBAL._SY355_.jpg",
+		"level": "2"
 	}
 ]
