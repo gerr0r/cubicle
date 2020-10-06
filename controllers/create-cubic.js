@@ -1,3 +1,5 @@
+// dummy file to create database
+
 const Cubic = require("../models/cubic.js");
 
 const newCubic1 = new Cubic("Gan356 Air SM", "Test description","https://ae01.alicdn.com/kf/HTB1CSddXRxRMKJjy0Fdq6yifFXa6/Gan-356-Air-SM-3x3-Black-Magic-cube-GAN-Air-SM-Magnetic-3x3x3-Speed-cube-gans.jpg", 3);
