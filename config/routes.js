@@ -1,5 +1,5 @@
 // TODO: Require Controllers...
-const { getCubes, getCube } = require("../controllers/get-cubes");
+const { getCubes, getCube, searchCubes } = require("../controllers/get-cubes");
 const Cubic = require("../models/cubic.js");
 
 module.exports = (app) => {
@@ -36,6 +36,14 @@ module.exports = (app) => {
             cube: getCube(req.params.id)
         });
     });
+
+    app.post("/", (req,res) => {
+        const { search, from, to } = req.body;
+        res.render("index", {
+            title: "Search results:",
+            cubes: searchCubes(search,from,to)
+        });
+    })
 
     app.get("*", (req, res) => {
         res.render("404", {
