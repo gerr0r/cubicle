@@ -4,10 +4,10 @@ const Cubic = require("../models/cubic.js");
 
 module.exports = (app) => {
 
-    app.get("/", (req, res) => {
+    app.get("/", async (req, res) => {
         res.render("index", {
             title: "Cibicle Workshop",
-            cubes: getCubes()
+            cubes: await getCubes()
         });
     });
 
@@ -25,15 +25,17 @@ module.exports = (app) => {
 
     app.post("/create", (req, res) => {
         const { name, description, image, level } = req.body;
-        const cube = new Cubic(name, description, image, level);
-        cube.save();
-        res.redirect("/");
+        const cube = new Cubic({name, description, image, level});
+        cube.save(err => {
+            if (err) throw err;
+            else res.redirect("/");
+        });
      });
 
-    app.get("/details/:id", (req, res) => {
+    app.get("/details/:id", async (req, res) => {
         res.render("details", {
             title: "Cube details",
-            cube: getCube(req.params.id)
+            cube: await getCube(req.params.id)
         });
     });
 

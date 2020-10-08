@@ -1,13 +1,15 @@
 const fs = require("fs");
+const { compileFunction } = require("vm");
+const Cubic = require("../models/cubic")
 
-const getCubes = () => {
-    let cubes = fs.readFileSync("config/database.json");
-    return JSON.parse(cubes);
+const getCubes = async () => {
+    let cubes = await Cubic.find().lean();
+    return cubes;
 }
 
-const getCube = id => {
-    let cubes = fs.readFileSync("config/database.json");
-    return JSON.parse(cubes).find(cube => cube.id === id);
+const getCube = async id => {
+    let cube = await Cubic.findById(id).lean();
+    return cube;
 }
 
 const searchCubes = (pattern, fromLevel, toLevel) => {
