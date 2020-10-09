@@ -12,6 +12,10 @@ const AccessorySchema = new mongoose.Schema({
     },
     image: {
         type: String,
+        validate: {
+            validator: url => /^https?:\/{2}/.test(url),
+            message: url => `${url.value} is not valid url`
+        },
         required: true
     },
     cubes: [{

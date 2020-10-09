@@ -1,4 +1,4 @@
-const fs = require("fs");
+const Accessory = require("../models/accessory");
 const Cubic = require("../models/cubic")
 
 const getCubes = async () => {
@@ -11,7 +11,7 @@ const getCube = async id => {
     return cube;
 }
 
-const searchCubes = (pattern, fromLevel, toLevel) => {
+const searchCubes = async (pattern, fromLevel, toLevel) => {
     pattern = pattern.trim();
     fromLevel = fromLevel.trim();
     toLevel = toLevel.trim();
@@ -29,9 +29,7 @@ const searchCubes = (pattern, fromLevel, toLevel) => {
         return;
     }
 
-    let json = fs.readFileSync("config/database.json");
-    let data = JSON.parse(json);
-
+    let data = await Cubic.find().lean();
     let cubes = data.filter(obj =>
         (obj.name.includes(pattern) || obj.description.includes(pattern))
         && obj.level >= fromLevel
@@ -40,8 +38,22 @@ const searchCubes = (pattern, fromLevel, toLevel) => {
     return cubes;
 }
 
+const updateCube = async (cubeId, accessoryId) => {
+    await Cubic.findByIdAndUpdate(cubeId, {
+        $addToSet: {
+            accessories: [accessoryId]
+        }
+    });
+    await Accessory.findByIdAndUpdate(accessoryId, {
+        $addToSet: {
+            cubes: [cubeId]
+        }
+    });
+}
+
 module.exports = {
     getCubes,
     getCube,
-    searchCubes
+    searchCubes,
+    updateCube
 }
