@@ -1,5 +1,4 @@
 const fs = require("fs");
-const { compileFunction } = require("vm");
 const Cubic = require("../models/cubic")
 
 const getCubes = async () => {

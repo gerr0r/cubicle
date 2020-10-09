@@ -5,12 +5,11 @@ const app = require('express')();
 
 const mongoose = require("mongoose");
 
-mongoose.connect(config._dbUrl, {
+mongoose.connect(config.dbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, err => {
     if (err) {
-        console.log(config._dbUrl);
         console.error(err);
         throw err;
     }
