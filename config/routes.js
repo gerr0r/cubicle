@@ -1,6 +1,7 @@
 // TODO: Require Controllers...
 const { getCubes, getCube, searchCubes } = require("../controllers/get-cubes");
-const Cubic = require("../models/cubic.js");
+const Cubic = require("../models/cubic");
+const Accessory = require("../models/accessory");
 
 module.exports = (app) => {
 
@@ -25,12 +26,12 @@ module.exports = (app) => {
 
     app.post("/create", (req, res) => {
         const { name, description, image, level } = req.body;
-        const cube = new Cubic({name, description, image, level});
+        const cube = new Cubic({ name, description, image, level });
         cube.save(err => {
             if (err) throw err;
             else res.redirect("/");
         });
-     });
+    });
 
     app.get("/details/:id", async (req, res) => {
         res.render("details", {
@@ -39,13 +40,35 @@ module.exports = (app) => {
         });
     });
 
-    app.post("/", (req,res) => {
+    app.post("/", (req, res) => {
         const { search, from, to } = req.body;
         res.render("index", {
             title: "Search results:",
-            cubes: searchCubes(search,from,to)
+            cubes: searchCubes(search, from, to)
         });
-    })
+    });
+
+    app.get("/create/accessory", (req, res) => {
+        res.render("createAccessory", {
+            title: "Create Accessory..."
+        });
+    });
+
+    app.post("/create/accessory", (req, res) => {
+        const { name, description, image} = req.body;
+        const accessory = new Accessory({ name, description, image});
+        accessory.save(err => {
+            if (err) throw err;
+            else res.redirect("/create/accessory");
+        })
+    });
+
+    app.get("/attach/accessory/:id", async (req, res) => {
+        res.render("attachAccessory", {
+            title: "Attach Accessory...",
+            cube: await getCube(req.params.id)
+        });
+    });
 
     app.get("*", (req, res) => {
         res.render("404", {
