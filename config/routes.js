@@ -1,5 +1,6 @@
 // TODO: Require Controllers...
-const { getCubes, getCube, searchCubes } = require("../controllers/get-cubes");
+const { getCubes, getCube, searchCubes, updateCube } = require("../controllers/cubic");
+const { getRestAccessories, getCubeAccessories } = require("../controllers/accessory");
 const Cubic = require("../models/cubic");
 const Accessory = require("../models/accessory");
 
@@ -28,7 +29,10 @@ module.exports = (app) => {
         const { name, description, image, level } = req.body;
         const cube = new Cubic({ name, description, image, level });
         cube.save(err => {
-            if (err) throw err;
+            if (err) {
+                console.error(err);
+                res.redirect("/create");
+            }
             else res.redirect("/");
         });
     });
@@ -36,15 +40,16 @@ module.exports = (app) => {
     app.get("/details/:id", async (req, res) => {
         res.render("details", {
             title: "Cube details",
-            cube: await getCube(req.params.id)
+            cube: await getCube(req.params.id),
+            accessories: await getCubeAccessories(req.params.id)
         });
     });
 
-    app.post("/", (req, res) => {
+    app.post("/", async (req, res) => {
         const { search, from, to } = req.body;
         res.render("index", {
             title: "Search results:",
-            cubes: searchCubes(search, from, to)
+            cubes: await searchCubes(search, from, to)
         });
     });
 
@@ -56,18 +61,27 @@ module.exports = (app) => {
 
     app.post("/create/accessory", (req, res) => {
         const { name, description, image} = req.body;
-        const accessory = new Accessory({ name, description, image});
+        const accessory = new Accessory({ name, description, image });
         accessory.save(err => {
-            if (err) throw err;
-            else res.redirect("/create/accessory");
+            if (err) {
+                console.error(err);
+            }
+            res.redirect("/create/accessory");
         })
     });
 
     app.get("/attach/accessory/:id", async (req, res) => {
         res.render("attachAccessory", {
             title: "Attach Accessory...",
-            cube: await getCube(req.params.id)
+            cube: await getCube(req.params.id),
+            accessories: await getRestAccessories(req.params.id)
         });
+    });
+
+    app.post("/attach/accessory/:id", async (req, res) => {
+        let { accessory } = req.body;
+        await updateCube(req.params.id, accessory);
+        res.redirect(`/details/${req.params.id}`);
     });
 
     app.get("*", (req, res) => {
