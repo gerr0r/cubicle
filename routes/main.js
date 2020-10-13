@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
 
 
 router.get("/create", (req, res) => {
-    res.render("create", {
+    res.render("create-cube", {
         title: "Add new cube..."
     });
 });
@@ -40,8 +40,20 @@ router.post("/create", (req, res) => {
     });
 });
 
+router.get("/edit", (req, res) => {
+    res.render("edit-cube", {
+        title: "Edit cube..."
+    });
+});
+
+router.get("/delete", (req, res) => {
+    res.render("delete-cube", {
+        title: "Delete cube..."
+    });
+});
+
 router.get("/details/:id", async (req, res) => {
-    res.render("details", {
+    res.render("details-cube", {
         title: "Cube details",
         cube: await getCube(req.params.id),
         accessories: await getCubeAccessories(req.params.id)
@@ -51,7 +63,7 @@ router.get("/details/:id", async (req, res) => {
 
 
 router.get("/create/accessory", (req, res) => {
-    res.render("createAccessory", {
+    res.render("create-accessory", {
         title: "Create Accessory..."
     });
 });
@@ -68,7 +80,7 @@ router.post("/create/accessory", (req, res) => {
 });
 
 router.get("/attach/accessory/:id", async (req, res) => {
-    res.render("attachAccessory", {
+    res.render("attach-accessory", {
         title: "Attach Accessory...",
         cube: await getCube(req.params.id),
         accessories: await getRestAccessories(req.params.id)

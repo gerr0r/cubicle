@@ -7,6 +7,7 @@ const app = express();
 
 const mainRoutes = require("./routes/main")
 const staticRoutes = require("./routes/static")
+const authRoutes = require("./routes/auth")
 const errorRoutes = require("./routes/error")
 
 const mongoose = require("mongoose");
@@ -28,6 +29,7 @@ require('./config/express')(app);
 
 app.use("/",mainRoutes)
 app.use("/",staticRoutes)
+app.use("/",authRoutes)
 app.use("/",errorRoutes)
 
 app.listen(config.port, console.log(`Server up on port ${config.port}!`));
