@@ -1,3 +1,4 @@
+require('dotenv').config()
 const env = process.env.NODE_ENV || 'development';
 
 const config = require('./config/config')[env];
@@ -14,10 +15,10 @@ mongoose.connect(config.dbUrl, {
         throw err;
     }
 
-    console.log("Database is up and running!");
+    console.log("Database up and running!");
 })
 
 require('./config/express')(app);
 require('./config/routes')(app);
 
-app.listen(config.port, console.log(`Listening on port ${config.port}! Now its up to you...`));
+app.listen(config.port, console.log(`Server up on port ${config.port}!`));
