@@ -34,9 +34,7 @@ router.post("/create", (req, res) => {
     const { name, description, image, level } = req.body;
 
     const token = req.cookies.uid
-    console.log("token: ", token);
     const decoded = jwt.verify(token, process.env.JWT_PK)
-    console.log(decoded);
     const cube = new Cubic({ name, description, image, level, creatorId: decoded._id });
     cube.save(err => {
         if (err) {
