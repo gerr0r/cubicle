@@ -33,6 +33,11 @@ router.post("/login", async (req, res) => {
         return res.redirect("/")
     }
     res.redirect("/login");
+});
+
+router.get("/logout", (req, res) => {
+    res.clearCookie("uid")
+    res.redirect("/")
 })
 
 module.exports = router
