@@ -11,25 +11,23 @@ const authRoutes = require("./routes/auth")
 const errorRoutes = require("./routes/error")
 
 const mongoose = require("mongoose");
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useUnifiedTopology', true);
 
-mongoose.connect(config.dbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}, err => {
+mongoose.connect(config.dbUrl, err => {
     if (err) {
         console.error(err);
         throw err;
     }
-
     console.log("Database up and running!");
 })
 
 require('./config/express')(app);
-// require('./routes/routes')(app);
 
-app.use("/",mainRoutes)
-app.use("/",staticRoutes)
-app.use("/",authRoutes)
-app.use("/",errorRoutes)
+app.use("/", mainRoutes)
+app.use("/", staticRoutes)
+app.use("/", authRoutes)
+app.use("/", errorRoutes)
 
 app.listen(config.port, console.log(`Server up on port ${config.port}!`));

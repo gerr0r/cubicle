@@ -14,7 +14,26 @@ async function getRestAccessories(id) {
     return restAccessories;
 }
 
+async function createAccessory(req, status = false) {
+    const { name, description, image } = req.body;
+    const accessory = new Accessory({ 
+        name,
+        description,
+        image
+    });
+    
+    try {
+        await accessory.save();
+        status = true;
+    } catch (error) {
+        console.error(error); 
+    } finally {
+        return { status };
+    }
+}
+
 module.exports = {
     getRestAccessories,
-    getCubeAccessories
+    getCubeAccessories,
+    createAccessory
 }
