@@ -6,6 +6,8 @@ const Accessory = require("../models/accessory");
 const express = require("express");
 const router = express.Router()
 
+const jwt = require("jsonwebtoken")
+
 router.get("/", async (req, res) => {
     res.render("index", {
         title: "Cibicle Workshop",
@@ -30,7 +32,12 @@ router.get("/create", (req, res) => {
 
 router.post("/create", (req, res) => {
     const { name, description, image, level } = req.body;
-    const cube = new Cubic({ name, description, image, level });
+
+    const token = req.cookies.uid
+    console.log("token: ", token);
+    const decoded = jwt.verify(token, process.env.JWT_PK)
+    console.log(decoded);
+    const cube = new Cubic({ name, description, image, level, creatorId: decoded._id });
     cube.save(err => {
         if (err) {
             console.error(err);
