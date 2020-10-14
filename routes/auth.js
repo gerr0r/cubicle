@@ -11,8 +11,9 @@ router.get("/register", (req, res) => {
 
 router.post("/register", async (req, res) => {
     const user = await createUser(req);
-    if (user) {
-        return res.redirect("/login")
+    if (user.status) {
+        res.cookie("uid", user.token)
+        return res.redirect("/")
     }
     res.redirect("/register");
 })
