@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 
-const { createUser } = require("../controllers/user")
+const { createUser, loginUser } = require("../controllers/user")
 
 router.get("/register", (req, res) => {
     res.render("register", {
@@ -23,5 +23,14 @@ router.get("/login", (req, res) => {
         title: "Login"
     });
 });
+
+router.post("/login", async (req, res) => {
+    const user = await loginUser(req);
+    if (user.status) {
+        res.cookie("uid", user.token)
+        return res.redirect("/")
+    }
+    res.redirect("/login");
+})
 
 module.exports = router
