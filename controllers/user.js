@@ -21,9 +21,9 @@ async function createUser(req, status = false) {
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(password, salt)
 
-    const user = new User({ 
-        username, 
-        password: hash 
+    const user = new User({
+        username,
+        password: hash
     });
 
     try {
@@ -33,7 +33,7 @@ async function createUser(req, status = false) {
         return { status, token }
     } catch (error) {
         console.error(error);
-        return { status } 
+        return { status }
     }
 }
 
@@ -54,7 +54,26 @@ async function loginUser(req) {
     }
 }
 
+function checkAuth(req, res, next) {
+    const token = req.cookies.uid
+    try {
+        let decoded = jwt.verify(token, process.env.JWT_PK)
+        next()
+    } catch (error) {
+        console.error(error)
+        res.redirect("/")
+    }
+}
+
+function checkGuest(req, res, next) {
+    const token = req.cookies.uid
+    if (token || token === '') return res.redirect("/")
+    next()
+}
+
 module.exports = {
     createUser,
-    loginUser
+    loginUser,
+    checkAuth,
+    checkGuest
 }

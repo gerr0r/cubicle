@@ -3,7 +3,8 @@ const router = express.Router()
 
 router.get("/about", (req, res) => {
     res.render("about", {
-        title: "About us"
+        title: "About us",
+        isLogged: Boolean(req.cookies.uid)
     });
 });
 
