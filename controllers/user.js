@@ -10,8 +10,7 @@ function generateToken(data) {
     return token;
 }
 
-async function createUser(req) {
-    let status = false
+async function createUser(req, status = false) {
     const { username, password, repeatPassword } = req.body;
 
     if (password !== repeatPassword) {

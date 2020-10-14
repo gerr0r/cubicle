@@ -1,12 +1,8 @@
-// TODO: Require Controllers...
-const { getCubes, getCube, searchCubes, updateCube } = require("../controllers/cubic");
-const { getRestAccessories, getCubeAccessories } = require("../controllers/accessory");
-const Cubic = require("../models/cubic");
-const Accessory = require("../models/accessory");
 const express = require("express");
 const router = express.Router()
 
-const jwt = require("jsonwebtoken")
+const { getCubes, getCube, searchCubes, createCube, updateCube } = require("../controllers/cubic");
+const { getRestAccessories, getCubeAccessories, createAccessory } = require("../controllers/accessory");
 
 router.get("/", async (req, res) => {
     res.render("index", {
@@ -30,19 +26,13 @@ router.get("/create", (req, res) => {
     });
 });
 
-router.post("/create", (req, res) => {
-    const { name, description, image, level } = req.body;
-
-    const token = req.cookies.uid
-    const decoded = jwt.verify(token, process.env.JWT_PK)
-    const cube = new Cubic({ name, description, image, level, creatorId: decoded._id });
-    cube.save(err => {
-        if (err) {
-            console.error(err);
-            res.redirect("/create");
-        }
-        else res.redirect("/");
-    });
+router.post("/create", async (req, res) => {
+    const cube = await createCube(req)
+    if (cube.status) {
+        res.redirect("/")
+    } else {
+        res.redirect("/create");
+    }
 });
 
 router.get("/edit", (req, res) => {
@@ -73,15 +63,13 @@ router.get("/create/accessory", (req, res) => {
     });
 });
 
-router.post("/create/accessory", (req, res) => {
-    const { name, description, image } = req.body;
-    const accessory = new Accessory({ name, description, image });
-    accessory.save(err => {
-        if (err) {
-            console.error(err);
-        }
+router.post("/create/accessory", async (req, res) => {
+    const accessory = await createAccessory(req);
+    if (accessory.status) {
+        res.redirect("/")
+    } else {
         res.redirect("/create/accessory");
-    })
+    }
 });
 
 router.get("/attach/accessory/:id", async (req, res) => {

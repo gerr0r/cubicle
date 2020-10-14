@@ -1,5 +1,6 @@
 const Accessory = require("../models/accessory");
 const Cubic = require("../models/cubic")
+const jwt = require("jsonwebtoken")
 
 const getCubes = async () => {
     let cubes = await Cubic.find().lean();
@@ -25,7 +26,7 @@ const searchCubes = async (pattern, fromLevel, toLevel) => {
     else toLevel = Number(toLevel);
 
     if (fromLevel > toLevel) {
-        console.log("Error");
+        console.error("Error");
         return;
     }
 
@@ -36,6 +37,29 @@ const searchCubes = async (pattern, fromLevel, toLevel) => {
         && obj.level <= toLevel);
 
     return cubes;
+}
+
+const createCube = async (req, status = false) => {
+    const { name, description, image, level } = req.body;
+
+    const token = req.cookies.uid;
+    const decoded = jwt.verify(token, process.env.JWT_PK);
+    const cube = new Cubic({ 
+        name, 
+        description, 
+        image, 
+        level, 
+        creatorId: decoded._id 
+    });
+
+    try {
+        await cube.save();
+        status = true;
+    } catch (error) {
+        console.error(error);
+    } finally {
+        return { status };
+    }
 }
 
 const updateCube = async (cubeId, accessoryId) => {
@@ -55,5 +79,6 @@ module.exports = {
     getCubes,
     getCube,
     searchCubes,
+    createCube,
     updateCube
 }
