@@ -1,11 +1,12 @@
 const express = require("express")
 const router = express.Router()
 
-const { createUser, loginUser } = require("../controllers/user")
+const { createUser, loginUser, checkGuest } = require("../controllers/user")
 
-router.get("/register", (req, res) => {
+router.get("/register", checkGuest, (req, res) => {
     res.render("register", {
-        title: "Register..."
+        title: "Register...",
+        isLogged: Boolean(req.cookies.uid)
     });
 });
 
@@ -18,9 +19,10 @@ router.post("/register", async (req, res) => {
     res.redirect("/register");
 })
 
-router.get("/login", (req, res) => {
+router.get("/login", checkGuest, (req, res) => {
     res.render("login", {
-        title: "Login"
+        title: "Login",
+        isLogged: Boolean(req.cookies.uid)
     });
 });
 
