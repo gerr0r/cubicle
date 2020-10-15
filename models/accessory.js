@@ -3,19 +3,20 @@ const mongoose = require("mongoose");
 const AccessorySchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        minlength: [ 5, "Accessory name should be minimum 5 symbols." ],
+        match: [ /^[A-Za-z0-9 ]+$/, "Accessory name should consist only of digits, spaces and English letters." ]
     },
     description: {
         type: String,
         required: true,
-        maxlength: 2000
+        minlength:[ 20, "Accessory description should be minimum 20 symbols." ],
+        maxlength: [ 500, "Accessory description should be maximum 500 symbols." ],
+        match: [ /^[A-Za-z0-9 ]+$/, "Accessory description should consist only of digits, spaces and English letters." ]
     },
     image: {
         type: String,
-        validate: {
-            validator: url => /^https?:\/{2}/.test(url),
-            message: url => `${url.value} is not valid url`
-        },
+        match: [ /^https?:\/{2}/, "Bad url: {VALUE}" ],
         required: true
     },
     cubes: [{
