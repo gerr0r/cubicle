@@ -71,9 +71,22 @@ function checkGuest(req, res, next) {
     next()
 }
 
+function checkCreator(req, id) {
+    const token = req.cookies.uid
+    try {
+        let decoded = jwt.verify(token, process.env.JWT_PK)
+        if (decoded._id === id) return true;
+        return false;
+    } catch (error) {
+        console.error(error)
+        return false;
+    }
+}
+
 module.exports = {
     createUser,
     loginUser,
     checkAuth,
-    checkGuest
+    checkGuest,
+    checkCreator
 }

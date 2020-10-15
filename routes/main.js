@@ -3,7 +3,7 @@ const router = express.Router()
 
 const { getCubes, getCube, searchCubes, createCube, updateCube } = require("../controllers/cubic");
 const { getRestAccessories, getCubeAccessories, createAccessory } = require("../controllers/accessory");
-const { checkAuth } = require("../controllers/user")
+const { checkAuth, checkCreator } = require("../controllers/user")
 
 router.get("/", async (req, res) => {
     res.render("index", {
@@ -53,12 +53,14 @@ router.get("/delete", checkAuth, (req, res) => {
 });
 
 router.get("/details/:id", async (req, res) => {
-    res.render("details-cube", {
+    const data = {
         title: "Cube details",
         isLogged: Boolean(req.cookies.uid),
         cube: await getCube(req.params.id),
         accessories: await getCubeAccessories(req.params.id)
-    });
+    }
+    data.isCreator = checkCreator(req, data.cube.creatorId);
+    res.render("details-cube", data);
 });
 
 
