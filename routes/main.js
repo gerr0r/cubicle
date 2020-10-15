@@ -38,17 +38,33 @@ router.post("/create", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/edit", checkAuth, (req, res) => {
+router.get("/edit/:id", checkAuth, async (req, res) => {
     res.render("edit-cube", {
         title: "Edit cube...",
-        isLogged: Boolean(req.cookies.uid)
+        cube: await getCube(req.params.id),
+        isLogged: Boolean(req.cookies.uid),
+        helpers: {
+            select: function (value, element) {
+                let pre = `value="${value}"`
+                let post = `${pre} selected`
+                return element.fn(this).replace(pre, post)
+            }
+        }
     });
 });
 
-router.get("/delete", checkAuth, (req, res) => {
+router.get("/delete/:id", checkAuth, async (req, res) => {
     res.render("delete-cube", {
         title: "Delete cube...",
-        isLogged: Boolean(req.cookies.uid)
+        cube: await getCube(req.params.id),
+        isLogged: Boolean(req.cookies.uid),
+        helpers: {
+            select: function (value, element) {
+                let pre = `value="${value}"`
+                let post = `${pre} selected`
+                return element.fn(this).replace(pre, post)
+            }
+        }        
     });
 });
 
