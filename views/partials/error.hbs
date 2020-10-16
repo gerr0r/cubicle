@@ -1,3 +1,7 @@
+{{#if error}}
 <div id="notifications">
-    <p id="notification-message">{{error}}</p>
+{{#each error}}
+    <p id="notification-message">{{this}}</p>
+{{/each}}
 </div>
+{{/if}}

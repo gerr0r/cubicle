@@ -10,22 +10,24 @@ function generateToken(data) {
     return token;
 }
 
-async function createUser(req, status = false) {
+async function createUser(req, status = false, errors = []) {
     const { username, password, repeatPassword } = req.body;
 
-    if (password.length < 8) {
-        console.error("Password should be minimum 8 symbols.")
-        return { status }
+    function setError(msg) {
+        console.error(msg)
+        errors.push(msg)
     }
 
-    if (!/^[A-Za-z0-9]+$/.test(password)) {
-        console.error("Password should consist only of digits and English letters.")
-        return { status }
-    }
+    if (!username) setError("Username is required.")
+    if (username.length < 5) setError("Username should be minimum 5 symbols.")
+    if (!/^[A-Za-z0-9]+$/.test(username)) setError("Username should consist only of digits and English letters.")
+    if (!password) setError("Password is required.")
+    if (password.length < 8) setError("Password should be minimum 8 symbols.")
+    if (!/^[A-Za-z0-9]+$/.test(password)) setError("Password should consist only of digits and English letters.")
+    if (password !== repeatPassword) setError("Password confirmation mismatch.")
 
-    if (password !== repeatPassword) {
-        console.error("Password confirmation mismatch.")
-        return { status }
+    if (errors.length) {
+        return { status , errors }
     }
 
     const salt = await bcrypt.genSalt(10)
@@ -41,25 +43,31 @@ async function createUser(req, status = false) {
         const token = generateToken(userObj)
         status = true
         return { status, token }
-    } catch (error) {
-        console.error(error);
-        return { status }
+    } catch (err) {
+        if (err.code === 11000) {
+            setError(`User with name ${username} already exists!`);
+            console.log(errors);
+        } else {
+            setError("General error");
+        }
+        return  { status , errors }
     }
 }
 
-async function loginUser(req) {
-    let status = false;
+async function loginUser(req, status = false) {
     const { username, password } = req.body;
 
     if (!username || !password) {
-        console.error("Username and password required.")
-        return { status }
+        let msg = "Username and password required."
+        console.error(msg)
+        return { status , error: [ msg ] }
     }
 
     const userObj = await User.findOne({ username })
     if (!userObj) {
-        console.error("Username or password invalid!")
-        return { status }
+        let msg = ("Username or password invalid!")
+        console.error(msg)
+        return { status , error: [ msg ] }
     }
     status = await bcrypt.compare(password, userObj.password)
 
@@ -67,8 +75,9 @@ async function loginUser(req) {
         const token = generateToken(userObj);
         return { status, token }
     } else {
-        console.error("Username or password invalid!")
-        return { status }
+        let msg = ("Username or password invalid!")
+        console.error(msg)
+        return { status , error: [ msg ] }
     }
 }
 
