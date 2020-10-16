@@ -16,7 +16,11 @@ router.post("/register", async (req, res) => {
         res.cookie("uid", user.token)
         return res.redirect("/")
     }
-    res.redirect("/register");
+    res.render("register", {
+        title: "Register...",
+        error: user.errors,
+        username: req.body.username
+    })
 })
 
 router.get("/login", checkGuest, (req, res) => {
@@ -32,7 +36,11 @@ router.post("/login", async (req, res) => {
         res.cookie("uid", user.token)
         return res.redirect("/")
     }
-    res.redirect("/login");
+    res.render("login", {
+        title: "Login...",
+        error: user.error,
+        username: req.body.username
+    })
 });
 
 router.get("/logout", (req, res) => {
