@@ -34,7 +34,13 @@ router.post("/create", checkAuth, async (req, res) => {
     if (cube.status) {
         res.redirect("/")
     } else {
-        res.redirect("/create");
+        res.render("create-cube", {
+            title: "Add new cube...",
+            error: cube.errors,
+            name: req.body.name,
+            description: req.body.description,
+            image: req.body.image
+        });
     }
 });
 
@@ -93,7 +99,13 @@ router.post("/create/accessory", checkAuth, async (req, res) => {
     if (accessory.status) {
         res.redirect("/")
     } else {
-        res.redirect("/create/accessory");
+        res.render("create-accessory", {
+            title: "Create Accessory...",
+            error: accessory.errors,
+            name: req.body.name,
+            description: req.body.description,
+            image: req.body.image
+        });
     }
 });
 
@@ -110,7 +122,6 @@ router.post("/attach/accessory/:id", checkAuth, async (req, res) => {
     let { accessory } = req.body;
     await updateCube(req.params.id, accessory);
     res.redirect(`/details/${req.params.id}`);
-    console.log(decoded)
 });
 
 module.exports = router

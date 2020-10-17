@@ -14,7 +14,7 @@ async function getRestAccessories(id) {
     return restAccessories;
 }
 
-async function createAccessory(req, status = false) {
+async function createAccessory(req, status = false, errors = []) {
     const { name, description, image } = req.body;
     const accessory = new Accessory({ 
         name,
@@ -26,9 +26,9 @@ async function createAccessory(req, status = false) {
         await accessory.save();
         status = true;
     } catch (error) {
-        console.error(error); 
+        Object.keys(error.errors).forEach(path => errors.push(error.errors[path].properties.message));
     } finally {
-        return { status };
+        return { status , errors};
     }
 }
 
