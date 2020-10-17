@@ -39,7 +39,7 @@ const searchCubes = async (pattern, fromLevel, toLevel) => {
     return cubes;
 }
 
-const createCube = async (req, status = false) => {
+const createCube = async (req, status = false, errors = []) => {
     const { name, description, image, level } = req.body;
 
     const token = req.cookies.uid;
@@ -56,9 +56,9 @@ const createCube = async (req, status = false) => {
         await cube.save();
         status = true;
     } catch (error) {
-        console.error(error);
+        Object.keys(error.errors).forEach(path => errors.push(error.errors[path].properties.message));
     } finally {
-        return { status };
+        return { status , errors };
     }
 }
 
